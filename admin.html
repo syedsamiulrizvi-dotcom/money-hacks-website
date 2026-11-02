@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>MONEY HACKS | Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">MONEY <span>HACKS</span></a>
+            <a href="index.html" class="btn btn-outline">Visit Store</a>
+        </div>
+    </header>
+
+    <section class="section dark-section">
+        <div class="container">
+            <p class="section-label">AUTHORIZED ACCESS</p>
+            <h2>Admin <span>Panel</span></h2>
+
+            <p class="section-description">
+                Manage customer order status.
+                Authorized administrator access only.
+            </p>
+
+            <form id="adminUpdateForm" class="checkout-form">
+
+                <label for="adminKey">Admin Password</label>
+                <input
+                    type="password"
+                    id="adminKey"
+                    placeholder="Enter your Admin Password"
+                    required
+                    autocomplete="current-password">
+
+                <label for="adminOrderId">Order ID</label>
+                <input
+                    type="text"
+                    id="adminOrderId"
+                    placeholder="Enter Order ID"
+                    maxlength="8"
+                    required
+                    autocomplete="off">
+
+                <label for="adminOrderStatus">New Order Status</label>
+                <select id="adminOrderStatus" required>
+                    <option value="">Select Status</option>
+                    <option value="PENDING">PENDING</option>
+                    <option value="COMPLETED">COMPLETED</option>
+                </select>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    id="adminUpdateBtn">
+                    Update Order Status
+                </button>
+
+                <p
+                    id="adminUpdateMessage"
+                    class="checkout-message"
+                    role="status">
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <a href="index.html" class="logo">MONEY <span>HACKS</span></a>
+            <p>Authorized Order Management</p>
+            <p class="copyright">
+                © <span id="year"></span> MONEY HACKS.
+                All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
