@@ -1,84 +1,515 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>MONEY HACKS | Admin Panel</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>MONEY HACKS | Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-wrap{max-width:1050px;margin:auto;padding:35px 18px}
+    .admin-card{background:#151515;border:1px solid #333;border-radius:12px;padding:22px;margin:22px 0}
+    .admin-card h3{color:#d4af37;margin:0 0 18px}
+    .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+    .admin-card input,.admin-card textarea,.admin-card select{width:100%;padding:12px;margin:7px 0 14px;background:#090909;color:white;border:1px solid #444;border-radius:6px}
+    .admin-card label{display:block;color:#ddd;font-size:14px}
+    .admin-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+    .admin-table-wrap{overflow-x:auto}
+    .admin-table{width:100%;border-collapse:collapse;min-width:650px}
+    .admin-table th,.admin-table td{padding:12px;border-bottom:1px solid #333;text-align:left}
+    .admin-table th{color:#d4af37}
+    .admin-message{margin-top:12px;min-height:20px;color:#d4af37}
+    .admin-hidden{display:none!important}
+    .admin-product-image{width:48px;height:48px;object-fit:cover;border-radius:5px}
+    .admin-small{font-size:12px;color:#aaa}
+    .admin-danger{background:#8b2525!important}
+  </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="container nav-container">
-            <a href="index.html" class="logo">MONEY <span>HACKS</span></a>
-            <a href="index.html" class="btn btn-outline">Visit Store</a>
+<header class="header">
+  <div class="container nav-container">
+    <a href="index.html" class="logo">MONEY <span>HACKS</span></a>
+    <a href="index.html" class="btn btn-outline">Visit Store</a>
+  </div>
+</header>
+
+<main class="admin-wrap">
+  <p class="section-label">AUTHORIZED ACCESS</p>
+  <h2>Admin <span>Panel</span></h2>
+  <p class="section-description">Manage products, website settings and customer orders.</p>
+
+  <section class="admin-card" id="loginSection">
+    <h3>Administrator Login</h3>
+    <form id="loginForm">
+      <label for="adminKey">Admin Password</label>
+      <input id="adminKey" type="password" required autocomplete="current-password" placeholder="Enter your Admin Password">
+      <button class="btn btn-primary" type="submit" id="loginBtn">Login</button>
+      <p class="admin-message" id="loginMessage" role="status"></p>
+    </form>
+  </section>
+
+  <div id="adminDashboard" class="admin-hidden">
+
+    <div class="admin-actions">
+      <button class="btn btn-outline" type="button" id="refreshBtn">Refresh Data</button>
+      <button class="btn btn-outline" type="button" id="logoutBtn">Logout</button>
+    </div>
+    <p class="admin-message" id="globalMessage" role="status"></p>
+
+    <section class="admin-card">
+      <h3>Product Management</h3>
+      <form id="productForm">
+        <input type="hidden" id="productId">
+
+        <div class="admin-grid">
+          <div>
+            <label for="productName">Product Name</label>
+            <input id="productName" maxlength="100" required>
+          </div>
+          <div>
+            <label for="productPrice">Price (USD)</label>
+            <input id="productPrice" type="number" min="0" max="1000000" step="0.01" required>
+          </div>
+          <div>
+            <label for="productCategory">Category</label>
+            <input id="productCategory" maxlength="50" placeholder="e.g. gift-cards" required>
+          </div>
+          <div>
+            <label for="productImage">Image URL (HTTPS)</label>
+            <input id="productImage" type="url" placeholder="https://example.com/image.jpg">
+          </div>
         </div>
-    </header>
 
-    <section class="section dark-section">
-        <div class="container">
-            <p class="section-label">AUTHORIZED ACCESS</p>
-            <h2>Admin <span>Panel</span></h2>
+        <label for="productDescription">Description</label>
+        <textarea id="productDescription" rows="3" maxlength="500"></textarea>
 
-            <p class="section-description">
-                Manage customer order status.
-                Authorized administrator access only.
-            </p>
+        <label>
+          <input id="productActive" type="checkbox" checked style="width:auto">
+          Product Active (visible in store)
+        </label>
 
-            <form id="adminUpdateForm" class="checkout-form">
-
-                <label for="adminKey">Admin Password</label>
-                <input
-                    type="password"
-                    id="adminKey"
-                    placeholder="Enter your Admin Password"
-                    required
-                    autocomplete="current-password">
-
-                <label for="adminOrderId">Order ID</label>
-                <input
-                    type="text"
-                    id="adminOrderId"
-                    placeholder="Enter Order ID"
-                    maxlength="8"
-                    required
-                    autocomplete="off">
-
-                <label for="adminOrderStatus">New Order Status</label>
-                <select id="adminOrderStatus" required>
-                    <option value="">Select Status</option>
-                    <option value="PENDING">PENDING</option>
-                    <option value="COMPLETED">COMPLETED</option>
-                </select>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                    id="adminUpdateBtn">
-                    Update Order Status
-                </button>
-
-                <p
-                    id="adminUpdateMessage"
-                    class="checkout-message"
-                    role="status">
-                </p>
-            </form>
+        <div class="admin-actions">
+          <button class="btn btn-primary" type="submit" id="saveProductBtn">Add Product</button>
+          <button class="btn btn-outline" type="button" id="cancelEditBtn">Clear Form</button>
         </div>
+        <p class="admin-message" id="productMessage" role="status"></p>
+      </form>
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <a href="index.html" class="logo">MONEY <span>HACKS</span></a>
-            <p>Authorized Order Management</p>
-            <p class="copyright">
-                © <span id="year"></span> MONEY HACKS.
-                All Rights Reserved.
-            </p>
-        </div>
-    </footer>
+    <section class="admin-card">
+      <h3>Product List</h3>
+      <p class="admin-small">Use Edit to change a product. Use Active/Inactive to hide or show it. Products are not permanently deleted.</p>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>Image</th><th>Name</th><th>Price</th><th>Category</th><th>Status</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="productTable">
+            <tr><td colspan="7">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-    <script src="script.js"></script>
+    <section class="admin-card">
+      <h3>Homepage Settings</h3>
+      <form id="settingsForm">
+        <label for="siteHeadline">Main Headline</label>
+        <input id="siteHeadline" maxlength="150">
+
+        <label for="siteIntro">Homepage Description</label>
+        <textarea id="siteIntro" rows="3" maxlength="500"></textarea>
+<label for="logoUrl">Header Logo Image URL (HTTPS)</label>
+<input
+  id="logoUrl"
+  type="url"
+  placeholder="https://example.com/logo.png"
+>
+        <label for="bannerImage">Banner Image URL (HTTPS)</label>
+        <input id="bannerImage" type="url" placeholder="https://example.com/banner.jpg">
+
+        <div class="admin-grid">
+          <div>
+            <label for="offerTitle">Offer Title</label>
+            <input id="offerTitle" maxlength="150">
+          </div>
+          <div>
+            <label for="telegramUsername">Telegram Username (without @)</label>
+            <input id="telegramUsername" maxlength="100">
+          </div>
+        </div>
+
+        <label for="offerText">Offer Description</label>
+        <textarea id="offerText" rows="3" maxlength="500"></textarea>
+
+        <button class="btn btn-primary" type="submit" id="saveSettingsBtn">Save Homepage Settings</button>
+        <p class="admin-message" id="settingsMessage" role="status"></p>
+      </form>
+    </section>
+
+    <section class="admin-card">
+      <h3>Order Status Management</h3>
+      <form id="orderForm">
+        <label for="orderId">Order ID</label>
+        <input id="orderId" maxlength="30" required>
+
+        <label for="orderStatus">New Order Status</label>
+        <select id="orderStatus" required>
+          <option value="">Select Status</option>
+          <option value="PENDING">PENDING</option>
+          <option value="COMPLETED">COMPLETED</option>
+        </select>
+
+        <button class="btn btn-primary" type="submit" id="updateOrderBtn">Update Order Status</button>
+        <p class="admin-message" id="orderMessage" role="status"></p>
+      </form>
+    </section>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <a href="index.html" class="logo">MONEY <span>HACKS</span></a>
+    <p>Authorized Administration</p>
+    <p class="copyright">© <span id="year"></span> MONEY HACKS. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+const WORKER_URL = "https://money-hacks-orders.syedsamiulrizvi.workers.dev";
+
+let adminKey = "";
+let products = [];
+let settings = {};
+
+const $ = id => document.getElementById(id);
+
+function message(id, text, error = false) {
+  const el = $(id);
+  if (!el) return;
+  el.textContent = text;
+  el.style.color = error ? "#ff6b6b" : "#d4af37";
+}
+
+function escapeHTML(value = "") {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+  })[char]);
+}
+
+async function api(path, options = {}) {
+  const response = await fetch(WORKER_URL + path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      "X-Admin-Key": adminKey,
+      ...(options.headers || {})
+    }
+  });
+
+  let result;
+  try {
+    result = await response.json();
+  } catch {
+    throw new Error("Invalid server response.");
+  }
+
+  if (!response.ok || result.success === false) {
+    throw new Error(result.message || "Request failed.");
+  }
+  return result;
+}
+
+function setBusy(id, busy, busyText, normalText) {
+  const button = $(id);
+  if (!button) return;
+  button.disabled = busy;
+  button.textContent = busy ? busyText : normalText;
+}
+
+async function login(event) {
+  event.preventDefault();
+  adminKey = $("adminKey").value.trim();
+
+  if (!adminKey) return;
+
+  setBusy("loginBtn", true, "Checking...", "Login");
+  message("loginMessage", "Verifying administrator access...");
+
+  try {
+    await loadAllData();
+    $("loginSection").classList.add("admin-hidden");
+    $("adminDashboard").classList.remove("admin-hidden");
+    $("adminKey").value = "";
+    message("globalMessage", "Successfully logged in.");
+  } catch (error) {
+    adminKey = "";
+    message("loginMessage", error.message, true);
+  } finally {
+    setBusy("loginBtn", false, "Checking...", "Login");
+  }
+}
+
+function logout() {
+  adminKey = "";
+  products = [];
+  settings = {};
+  $("adminDashboard").classList.add("admin-hidden");
+  $("loginSection").classList.remove("admin-hidden");
+  $("loginForm").reset();
+  message("loginMessage", "You have been logged out.");
+}
+
+async function loadAllData() {
+  const [catalog, site] = await Promise.all([
+    api("/admin/catalog"),
+    api("/admin/site-settings")
+  ]);
+
+  products = Array.isArray(catalog.products) ? catalog.products : [];
+  settings = site.settings || {};
+
+  renderProducts();
+  fillSettings();
+}
+
+function renderProducts() {
+  const tbody = $("productTable");
+
+  if (!products.length) {
+    tbody.innerHTML = '<tr><td colspan="7">No products found.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = products.map(product => {
+    const image = product.imageUrl
+      ? `<img class="admin-product-image" src="${escapeHTML(product.imageUrl)}" alt="" onerror="this.style.display='none'">`
+      : "—";
+
+    return `
+      <tr>
+        <td>${Number(product.id)}</td>
+        <td>${image}</td>
+        <td>${escapeHTML(product.name)}</td>
+        <td>$${Number(product.price).toFixed(2)}</td>
+        <td>${escapeHTML(product.category)}</td>
+        <td>${product.active === false ? "Inactive" : "Active"}</td>
+        <td>
+          <button class="btn btn-outline" type="button" data-edit="${Number(product.id)}">Edit</button>
+          <button class="btn btn-outline" type="button" data-toggle="${Number(product.id)}">
+            ${product.active === false ? "Activate" : "Deactivate"}
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function resetProductForm() {
+  $("productForm").reset();
+  $("productId").value = "";
+  $("productActive").checked = true;
+  $("saveProductBtn").textContent = "Add Product";
+  message("productMessage", "");
+}
+
+function editProduct(id) {
+  const product = products.find(item => Number(item.id) === Number(id));
+  if (!product) return;
+
+  $("productId").value = product.id;
+  $("productName").value = product.name || "";
+  $("productPrice").value = product.price;
+  $("productCategory").value = product.category || "";
+  $("productImage").value = product.imageUrl || "";
+  $("productDescription").value = product.description || "";
+  $("productActive").checked = product.active !== false;
+  $("saveProductBtn").textContent = "Save Product Changes";
+
+  $("productForm").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+async function saveProducts() {
+  await api("/admin/catalog", {
+    method: "POST",
+    body: JSON.stringify({products})
+  });
+}
+
+async function submitProduct(event) {
+  event.preventDefault();
+
+  const idValue = $("productId").value;
+  const name = $("productName").value.trim();
+  const price = Number($("productPrice").value);
+  const category = $("productCategory").value.trim();
+  const imageUrl = $("productImage").value.trim();
+  const description = $("productDescription").value.trim();
+
+  if (!name || !category || !Number.isFinite(price) || price < 0) {
+    message("productMessage", "Please enter valid product information.", true);
+    return;
+  }
+
+  if (imageUrl && !imageUrl.startsWith("https://")) {
+    message("productMessage", "Image URL must start with https://", true);
+    return;
+  }
+
+  const product = {
+    id: idValue ? Number(idValue) : Math.max(0, ...products.map(p => Number(p.id) || 0)) + 1,
+    name,
+    price,
+    category,
+    description,
+    imageUrl,
+    active: $("productActive").checked
+  };
+
+  const previous = products.slice();
+
+  if (idValue) {
+    products = products.map(p => Number(p.id) === product.id ? product : p);
+  } else {
+    products.push(product);
+  }
+
+  setBusy("saveProductBtn", true, "Saving...", idValue ? "Save Product Changes" : "Add Product");
+
+  try {
+    await saveProducts();
+    renderProducts();
+    resetProductForm();
+    message("productMessage", "Product saved successfully.");
+  } catch (error) {
+    products = previous;
+    renderProducts();
+    message("productMessage", error.message, true);
+  } finally {
+    setBusy("saveProductBtn", false, "Saving...", idValue ? "Save Product Changes" : "Add Product");
+  }
+}
+
+async function toggleProduct(id) {
+  const previous = products.slice();
+
+  products = products.map(p =>
+    Number(p.id) === Number(id) ? {...p, active: p.active === false} : p
+  );
+
+  try {
+    await saveProducts();
+    renderProducts();
+    message("globalMessage", "Product status updated.");
+  } catch (error) {
+    products = previous;
+    renderProducts();
+    message("globalMessage", error.message, true);
+  }
+}
+
+function fillSettings() {
+  $("siteHeadline").value = settings.headline || "";
+  $("siteIntro").value = settings.intro || "";
+  $("logoUrl").value = settings.logoUrl || "";
+  $("bannerImage").value = settings.bannerImage || "";
+  $("offerTitle").value = settings.offerTitle || "";
+  $("offerText").value = settings.offerText || "";
+  $("telegramUsername").value = settings.telegramUsername || "";
+}
+
+async function submitSettings(event) {
+  event.preventDefault();
+
+  const data = {
+    headline: $("siteHeadline").value.trim(),
+    intro: $("siteIntro").value.trim(),
+    bannerImage: $("bannerImage").value.trim(),
+    logoUrl: $("logoUrl").value.trim(),
+    offerTitle: $("offerTitle").value.trim(),
+    offerText: $("offerText").value.trim(),
+    telegramUsername: $("telegramUsername").value.trim().replace(/^@/, "")
+  };
+if (data.logoUrl && !data.logoUrl.startsWith("https://")) {
+  message("settingsMessage", "Logo URL must start with https://", true);
+  return;
+}
+  if (data.bannerImage && !data.bannerImage.startsWith("https://")) {
+    message("settingsMessage", "Banner URL must start with https://", true);
+    return;
+  }
+
+  setBusy("saveSettingsBtn", true, "Saving...", "Save Homepage Settings");
+
+  try {
+    await api("/admin/site-settings", {
+      method: "POST",
+      body: JSON.stringify({settings:data})
+    });
+    settings = data;
+    message("settingsMessage", "Homepage settings saved successfully.");
+  } catch (error) {
+    message("settingsMessage", error.message, true);
+  } finally {
+    setBusy("saveSettingsBtn", false, "Saving...", "Save Homepage Settings");
+  }
+}
+
+async function submitOrderStatus(event) {
+  event.preventDefault();
+
+  const orderId = $("orderId").value.trim();
+  const orderStatus = $("orderStatus").value;
+
+  if (!orderId || !orderStatus) {
+    message("orderMessage", "Complete all fields.", true);
+    return;
+  }
+
+  setBusy("updateOrderBtn", true, "Updating...", "Update Order Status");
+
+  try {
+    await api("/admin/order-status", {
+      method: "POST",
+      body: JSON.stringify({orderId, orderStatus})
+    });
+    message("orderMessage", "Order status updated successfully.");
+  } catch (error) {
+    message("orderMessage", error.message, true);
+  } finally {
+    setBusy("updateOrderBtn", false, "Updating...", "Update Order Status");
+  }
+}
+
+$("loginForm").addEventListener("submit", login);
+$("logoutBtn").addEventListener("click", logout);
+$("refreshBtn").addEventListener("click", async () => {
+  try {
+    await loadAllData();
+    message("globalMessage", "Data refreshed.");
+  } catch (error) {
+    message("globalMessage", error.message, true);
+  }
+});
+$("productForm").addEventListener("submit", submitProduct);
+$("cancelEditBtn").addEventListener("click", resetProductForm);
+$("productTable").addEventListener("click", event => {
+  const edit = event.target.closest("[data-edit]");
+  const toggle = event.target.closest("[data-toggle]");
+
+  if (edit) editProduct(edit.dataset.edit);
+  if (toggle) toggleProduct(toggle.dataset.toggle);
+});
+$("settingsForm").addEventListener("submit", submitSettings);
+$("orderForm").addEventListener("submit", submitOrderStatus);
+$("year").textContent = new Date().getFullYear();
+</script>
+
 </body>
 </html>
